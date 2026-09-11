@@ -1,7 +1,7 @@
 {
-  "name": "DemoApiScalarGalaxy",
-  "slug": "demoApiScalarGalaxy",
-  "generatorVersion": "0.32.9",
+  "name": "ScalarGalaxy",
+  "slug": "scalarGalaxy",
+  "generatorVersion": "0.32.12",
   "servers": [
     "https://galaxy.scalar.com",
     "{protocol}://void.scalar.com/{path}"

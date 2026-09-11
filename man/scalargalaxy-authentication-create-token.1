@@ -1,17 +1,19 @@
 .\" File generated from our OpenAPI spec by Scalar. Do not edit.
-.TH "DEMOAPISCALARGALAXY\-PLANETS\-DELETE" "1" "" "demoapiscalargalaxy" "Demo API (Scalar Galaxy) Manual"
+.TH "SCALARGALAXY\-AUTHENTICATION\-CREATE\-TOKEN" "1" "" "scalargalaxy" "Scalar Galaxy Manual"
 .SH "NAME"
-demoapiscalargalaxy\-planets\-delete \- Delete a planet
+scalargalaxy\-authentication\-create\-token \- Get a token
 .SH "SYNOPSIS"
-.B demoapiscalargalaxy planets delete
-\fIplanet\-id\fR [\fIoptions\fR]
+.B scalargalaxy authentication create\-token
+\fB\-\-email\fR \fI<value>\fR \fB\-\-password\fR \fI<value>\fR [\fIoptions\fR]
 .SH "DESCRIPTION"
-This endpoint was used to delete planets. Unfortunately, that caused a lot of trouble for planets with life. So, this endpoint is now deprecated and should not be used anymore.
-.SH "ARGUMENTS"
-.TP
-\fIplanet\-id\fR, \fB\-\-planet\-id\fR \fI<value>\fR
-The ID of the planet to get. Required. Can also be supplied as \-\-planet\-id.
+Yeah, this is the boring security stuff. Just get your super secret token and move on.
 .SH "OPTIONS"
+.TP
+\fB\-\-email\fR \fI<value>\fR
+The email body parameter. Required.
+.TP
+\fB\-\-password\fR \fI<value>\fR
+The password body parameter. Required.
 .TP
 \fB\-\-base\-url\fR \fI<url>\fR
 Override the base URL for API requests.
@@ -67,7 +69,10 @@ OpenID Connect Authentication. Can also be set with the OPEN_ID_CONNECT environm
 .PP
 .RS 4
 .nf
-demoapiscalargalaxy planets delete '1' \-\-bearer\-auth "$BEARER_AUTH"
+scalargalaxy authentication create\-token \e
+  \-\-bearer\-auth "$BEARER_AUTH" \e
+  \-\-email 'marc@scalar.com' \e
+  \-\-password 'i\-love\-scalar'
 .fi
 .RE
 .SH "ENVIRONMENT"
@@ -124,4 +129,4 @@ The API failed to handle the request (HTTP 5xx). Reported as server\-error.
 \fB15\fR
 The API could not be reached, or the request timed out. Reported as connection\-error.
 .SH "SEE ALSO"
-.BR demoapiscalargalaxy (1)
+.BR scalargalaxy (1)

@@ -54,6 +54,11 @@ export type CliCommandDefinition = {
   readonly flags: readonly CliFlagDefinition[];
 };
 
+export type CliCommandGroup = {
+  readonly commandPath: readonly string[];
+  readonly description?: string;
+};
+
 export type CliClientOptionDefinition = {
   readonly clientKey: string;
   readonly sdkKey: string;
@@ -77,6 +82,9 @@ export type CreateProgramOptions = {
   readonly defaultErrorFormat: OutputFormat;
   readonly clientOptions: readonly CliClientOptionDefinition[];
   readonly commands: readonly CliCommandDefinition[];
+  // Descriptions for the resource-shaped parents commands hang under. Only described groups are
+  // listed; Commander already creates an undescribed parent implicitly.
+  readonly groups?: readonly CliCommandGroup[];
   // Completion script per shell, generated alongside the command table. Absent when the SDK
   // config disables shell completions, in which case no `completion` command is registered.
   readonly completions?: Readonly<Record<string, string>>;
@@ -115,6 +123,7 @@ export const createProgram = ({
   defaultErrorFormat,
   clientOptions,
   commands,
+  groups,
   completions,
 }: CreateProgramOptions): Command => {
   const program = usageExitCode(new Command());
@@ -144,7 +153,7 @@ export const createProgram = ({
     program.option('--' + option.name + ' <value>', clientOptionDescription(option));
   }
 
-  for (const definition of commands) addGeneratedCommand(program, SDK, clientOptions, definition);
+  for (const definition of commands) addGeneratedCommand(program, SDK, clientOptions, definition, groups);
 
   if (completions) addCompletionCommand(program, binaryName, completions);
 
@@ -221,8 +230,9 @@ const addGeneratedCommand = (
   SDK: CreateProgramOptions['SDK'],
   clientOptions: readonly CliClientOptionDefinition[],
   definition: CliCommandDefinition,
+  groups: readonly CliCommandGroup[] | undefined,
 ): void => {
-  const parent = ensureCommandPath(program, definition.commandPath.slice(0, -1));
+  const parent = ensureCommandPath(program, definition.commandPath.slice(0, -1), groups);
   const commandName = definition.commandPath.at(-1) ?? definition.methodName;
   const command = usageExitCode(new Command(commandName))
     .description(definition.summary ?? definition.description ?? '')
@@ -295,20 +305,42 @@ const addGeneratedCommand = (
   parent.addCommand(command);
 };
 
-const ensureCommandPath = (program: Command, path: readonly string[]): Command => {
+const ensureCommandPath = (
+  program: Command,
+  path: readonly string[],
+  groups: readonly CliCommandGroup[] | undefined,
+): Command => {
   let parent = program;
+  const walked: string[] = [];
   for (const part of path) {
+    walked.push(part);
     const existing = parent.commands.find((command) => command.name() === part);
     if (existing) {
       parent = existing;
       continue;
     }
     const next = usageExitCode(new Command(part)).showHelpAfterError();
+    // A group is created as the parent of its first command, so this is the only moment it can be
+    // described: Commander never revisits it, and an undescribed group is a bare name in --help.
+    const description = groupDescription(groups, walked);
+    if (description) next.description(description);
     parent.addCommand(next);
     parent = next;
   }
   return parent;
 };
+
+// Matched on the full walked path rather than the last segment, so a nested group is described by
+// the resource it was actually built from and two resources sharing a leaf name cannot collide.
+const groupDescription = (
+  groups: readonly CliCommandGroup[] | undefined,
+  path: readonly string[],
+): string | undefined =>
+  groups?.find(
+    (group) =>
+      group.commandPath.length === path.length &&
+      group.commandPath.every((part, index) => part === path[index]),
+  )?.description;
 
 const runGeneratedCommand = async (
   SDK: CreateProgramOptions['SDK'],

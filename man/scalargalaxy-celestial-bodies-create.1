@@ -1,22 +1,13 @@
 .\" File generated from our OpenAPI spec by Scalar. Do not edit.
-.TH "DEMOAPISCALARGALAXY\-AUTHENTICATION\-CREATE\-USER" "1" "" "demoapiscalargalaxy" "Demo API (Scalar Galaxy) Manual"
+.TH "SCALARGALAXY\-CELESTIAL\-BODIES\-CREATE" "1" "" "scalargalaxy" "Scalar Galaxy Manual"
 .SH "NAME"
-demoapiscalargalaxy\-authentication\-create\-user \- Create a user
+scalargalaxy\-celestial\-bodies\-create \- Create a celestial body
 .SH "SYNOPSIS"
-.B demoapiscalargalaxy authentication create\-user
-\fB\-\-email\fR \fI<value>\fR \fB\-\-password\fR \fI<value>\fR [\fIoptions\fR]
+.B scalargalaxy celestial\-bodies create
+[\fIoptions\fR]
 .SH "DESCRIPTION"
-Time to create a user account, eh?
+Create a celestial body
 .SH "OPTIONS"
-.TP
-\fB\-\-name\fR \fI<value>\fR
-The name body parameter.
-.TP
-\fB\-\-email\fR \fI<value>\fR
-The email body parameter. Required.
-.TP
-\fB\-\-password\fR \fI<value>\fR
-The password body parameter. Required.
 .TP
 \fB\-\-base\-url\fR \fI<url>\fR
 Override the base URL for API requests.
@@ -72,7 +63,7 @@ OpenID Connect Authentication. Can also be set with the OPEN_ID_CONNECT environm
 .PP
 .RS 4
 .nf
-demoapiscalargalaxy authentication create\-user \-\-bearer\-auth "$BEARER_AUTH" \-\-name 'Marc' \-\-email 'marc@scalar.com' \-\-password 'i\-love\-scalar'
+scalargalaxy celestial\-bodies create \-\-bearer\-auth "$BEARER_AUTH"
 .fi
 .RE
 .SH "ENVIRONMENT"
@@ -129,4 +120,4 @@ The API failed to handle the request (HTTP 5xx). Reported as server\-error.
 \fB15\fR
 The API could not be reached, or the request timed out. Reported as connection\-error.
 .SH "SEE ALSO"
-.BR demoapiscalargalaxy (1)
+.BR scalargalaxy (1)

@@ -2,7 +2,7 @@
 
 ## Reporting Security Issues
 
-This is a generated TypeScript CLI for Demo API (Scalar Galaxy), produced by the Scalar SDK Generator (https://scalar.com).
+This is a generated TypeScript CLI for Scalar Galaxy, produced by the Scalar SDK Generator (https://scalar.com).
 
 If the issue is in the generated CLI itself — its runtime, authentication handling, path construction, or serialization — report it to the Scalar team at support@scalar.com. We will acknowledge the report, triage it for severity and impact, and communicate a timeline for a fix or an explanation if we decline it.
 
@@ -12,7 +12,7 @@ Please allow us reasonable time to investigate and address the issue before disc
 
 ## Reporting Non-CLI Security Issues
 
-If the issue is in the Demo API (Scalar Galaxy) or service rather than in this CLI, report it through the security process Demo API (Scalar Galaxy) has published.
+If the issue is in the Scalar Galaxy API or service rather than in this CLI, report it through the security process Scalar Galaxy has published.
 
 ---
 

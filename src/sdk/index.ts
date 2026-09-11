@@ -1,12 +1,12 @@
 // File generated from our OpenAPI spec by Scalar. See README.md for details.
 
-export { DemoAPIScalarGalaxy as default } from './client.js';
+export { ScalarGalaxy as default } from './client.js';
 
 export { type Uploadable, toFile } from './core/uploads';
 export { APIPromise } from './api-promise';
-export { DemoAPIScalarGalaxy, type ClientOptions, type AuthTokenProvider } from './client.js';
+export { ScalarGalaxy, type ClientOptions, type AuthTokenProvider } from './client.js';
 export {
-  DemoAPIScalarGalaxyError,
+  ScalarGalaxyError,
   APIError,
   APIConnectionError,
   APIConnectionTimeoutError,

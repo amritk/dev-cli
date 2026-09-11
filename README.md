@@ -1,6 +1,6 @@
-# Demo API (Scalar Galaxy)
+# Scalar Galaxy
 
-This library provides convenient access to the Demo API (Scalar Galaxy) from the command line.
+This library provides convenient access to the Scalar Galaxy REST API from the command line.
 
 The full API of this library can be found in [api.md](./api.md).
 
@@ -27,8 +27,12 @@ The full API of this library can be found in [api.md](./api.md).
 ## Installation
 
 ```sh
-# npm (requires Node.js)
-npm install -g demo-api-scalar-galaxy-cli
+# Direct download — standalone binary, no Node.js required
+curl -fsSL https://github.com/amritk/dev-cli/releases/latest/download/scalargalaxy-$(uname -s | tr '[:upper:]' '[:lower:]')-$(uname -m | sed 's/x86_64/x64/;s/aarch64/arm64/').tar.gz | tar xz
+sudo mv scalargalaxy /usr/local/bin/
+
+# Windows — download and extract scalargalaxy-windows-x64.zip, then add it to PATH
+# https://github.com/amritk/dev-cli/releases/latest/download/scalargalaxy-windows-x64.zip
 ```
 
 <br />
@@ -36,9 +40,9 @@ npm install -g demo-api-scalar-galaxy-cli
 ## Usage
 
 ```sh
-demoapiscalargalaxy [resource] [command] [flags]
+scalargalaxy [resource] [command] [flags]
 
-demoapiscalargalaxy planets list --bearer-auth "$BEARER_AUTH" --limit '10' --offset '0'
+scalargalaxy planets list --bearer-auth "$BEARER_AUTH" --limit '10' --offset '0'
 ```
 
 The examples in the following sections assume a `client` configured as shown above.
@@ -52,38 +56,38 @@ See the [API reference](./api.md) for every available operation.
 Any command flag or credential reads its value from a file when the value begins with `@`, so a body field holding a whole document does not have to survive shell quoting. `@file://` always sends the file as text and `@data://` always sends it base64-encoded; a bare `@` lets the file decide. A flag that uploads a file takes its path with or without the `@`. Escape a literal value that begins with `@` as `\@`. The global options (`--base-url`, `--timeout`, `--format` and the rest) are read exactly as written.
 
 ```sh
-demoapiscalargalaxy COMMAND --FLAG @./body.json
-demoapiscalargalaxy COMMAND --FLAG @file://./notes.txt
-demoapiscalargalaxy COMMAND --FLAG @data://./logo.png
-demoapiscalargalaxy COMMAND --FLAG '\@not-a-file'
+scalargalaxy COMMAND --FLAG @./body.json
+scalargalaxy COMMAND --FLAG @file://./notes.txt
+scalargalaxy COMMAND --FLAG @data://./logo.png
+scalargalaxy COMMAND --FLAG '\@not-a-file'
 ```
 
 <br />
 
 ## Shell Completion
 
-`demoapiscalargalaxy completion <shell>` prints a completion script for bash, zsh, and fish. Add the matching line to your shell startup file to complete commands, subcommands, and flags with Tab.
+`scalargalaxy completion <shell>` prints a completion script for bash, zsh, and fish. Add the matching line to your shell startup file to complete commands, subcommands, and flags with Tab.
 
 ```sh
 # bash (~/.bashrc)
-eval "$(demoapiscalargalaxy completion bash)"
+eval "$(scalargalaxy completion bash)"
 
 # zsh (~/.zshrc)
-eval "$(demoapiscalargalaxy completion zsh)"
+eval "$(scalargalaxy completion zsh)"
 
 # fish (~/.config/fish/config.fish)
-demoapiscalargalaxy completion fish | source
+scalargalaxy completion fish | source
 ```
 
 <br />
 
 ## Manual Pages
 
-Installing the package globally also installs man pages. `man demoapiscalargalaxy` lists every command, and each command has its own page named after the command with spaces and `:` replaced by `-`.
+Installing the package globally also installs man pages. `man scalargalaxy` lists every command, and each command has its own page named after the command with spaces and `:` replaced by `-`.
 
 ```sh
-man demoapiscalargalaxy
-man demoapiscalargalaxy-<resource>-<command>
+man scalargalaxy
+man scalargalaxy-<resource>-<command>
 ```
 
 <br />
@@ -162,6 +166,6 @@ Generated clients support request timeouts and retry temporary failures such as 
 
 ## Requirements
 
-- Node.js 20 or newer
+- None — the standalone binaries bundle their own runtime.
 
 Powered by Scalar.

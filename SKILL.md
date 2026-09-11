@@ -1,17 +1,21 @@
 ---
-name: demo-api-scalar-galaxy-cli-sdk
-description: "CLI SDK for Demo API (Scalar Galaxy). Use when writing CLI code that calls Demo API (Scalar Galaxy) with the demo-api-scalar-galaxy-cli package: installing it, constructing and authenticating the client, and calling API operations."
+name: scalar-galaxy-cli-sdk
+description: "CLI SDK for Scalar Galaxy API. Use when writing CLI code that calls Scalar Galaxy API with the scalar-galaxy-cli package: installing it, constructing and authenticating the client, and calling API operations."
 ---
 
-# Demo API (Scalar Galaxy) CLI SDK
+# Scalar Galaxy CLI SDK
 
-Generated CLI client for Demo API (Scalar Galaxy), published as `demo-api-scalar-galaxy-cli`. Use the generated client instead of hand-writing HTTP requests.
+Generated CLI client for Scalar Galaxy API, published as `scalar-galaxy-cli`. Use the generated client instead of hand-writing HTTP requests.
 
 ## Install
 
 ```sh
-# npm (requires Node.js)
-npm install -g demo-api-scalar-galaxy-cli
+# Direct download — standalone binary, no Node.js required
+curl -fsSL https://github.com/amritk/dev-cli/releases/latest/download/scalargalaxy-$(uname -s | tr '[:upper:]' '[:lower:]')-$(uname -m | sed 's/x86_64/x64/;s/aarch64/arm64/').tar.gz | tar xz
+sudo mv scalargalaxy /usr/local/bin/
+
+# Windows — download and extract scalargalaxy-windows-x64.zip, then add it to PATH
+# https://github.com/amritk/dev-cli/releases/latest/download/scalargalaxy-windows-x64.zip
 ```
 
 ## Client setup and authentication
@@ -30,9 +34,9 @@ Provide credentials using the options below. Environment variables are read auto
 ## Calling operations
 
 ```sh
-demoapiscalargalaxy [resource] [command] [flags]
+scalargalaxy [resource] [command] [flags]
 
-demoapiscalargalaxy planets list --bearer-auth "$BEARER_AUTH" --limit '10' --offset '0'
+scalargalaxy planets list --bearer-auth "$BEARER_AUTH" --limit '10' --offset '0'
 ```
 
 Method names, parameter shapes, and response types are generated from the API description — do not guess them. Look up the exact call signature in [api.md](./api.md) before writing a call.
@@ -47,11 +51,11 @@ Failed requests print a structured error to standard error and exit with a statu
 - Use `--max-items <count>` to bound paginated, streaming, and WebSocket commands before they fill the context, and `--transform <dot.path>` to keep only the field you need.
 - Commands never prompt, so they are safe to run non-interactively. Credentials come from the documented environment variables or their flags.
 - Branch on the exit status rather than on stderr text: `0` success, `1` `error`, `2` `usage`, `10` `auth-failed`, `11` `not-found`, `12` `rate-limited`, `13` `client-error`, `14` `server-error`, `15` `connection-error`. A failed request repeats its class on stderr as a stable `code`, with a `hint` when there is a concrete next step; exit `2` is a plain message with no structured body, because the command never ran.
-- Run `demoapiscalargalaxy --help` or `demoapiscalargalaxy <resource> --help` to discover commands and flags, and `man demoapiscalargalaxy` for the full reference.
+- Run `scalargalaxy --help` or `scalargalaxy <resource> --help` to discover commands and flags, and `man scalargalaxy` for the full reference.
 
 ## Requirements
 
-- Node.js 20 or newer
+- None — the standalone binaries bundle their own runtime.
 
 ## Reference files
 

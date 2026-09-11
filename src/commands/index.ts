@@ -2,7 +2,12 @@
 
 import type { Command } from 'commander';
 import SDK from '../sdk/index';
-import { createProgram, type CliClientOptionDefinition, type CliCommandDefinition } from '../cli/runtime';
+import {
+  createProgram,
+  type CliClientOptionDefinition,
+  type CliCommandDefinition,
+  type CliCommandGroup,
+} from '../cli/runtime';
 import { completions } from '../cli/completions';
 
 const clientOptions = [
@@ -723,15 +728,32 @@ const commands = [
   },
 ] as const satisfies readonly CliCommandDefinition[];
 
+const groups = [
+  {
+    commandPath: ['planets'],
+    description: 'Everything about planets',
+  },
+  {
+    commandPath: ['celestial-bodies'],
+    description: 'Celestial bodies are the planets and satellites in the Scalar Galaxy.',
+  },
+  {
+    commandPath: ['authentication'],
+    description:
+      'Some endpoints are public, but some require authentication. We provide all the required endpoints to create an account and authorize yourself.',
+  },
+] as const satisfies readonly CliCommandGroup[];
+
 export const getProgram = (): Command =>
   createProgram({
     SDK,
-    binaryName: 'demoapiscalargalaxy',
+    binaryName: 'scalargalaxy',
     version: '0.1.0', // x-release-please-version
-    description: 'CLI for Demo API (Scalar Galaxy)',
+    description: 'CLI for Scalar Galaxy',
     defaultFormat: 'auto',
     defaultErrorFormat: 'auto',
     clientOptions,
     commands,
+    groups,
     completions,
   });

@@ -1,15 +1,17 @@
 .\" File generated from our OpenAPI spec by Scalar. Do not edit.
-.TH "DEMOAPISCALARGALAXY" "1" "" "demoapiscalargalaxy" "Demo API (Scalar Galaxy) Manual"
+.TH "SCALARGALAXY\-PLANETS\-DELETE" "1" "" "scalargalaxy" "Scalar Galaxy Manual"
 .SH "NAME"
-demoapiscalargalaxy \- command line interface for the Demo API (Scalar Galaxy)
+scalargalaxy\-planets\-delete \- Delete a planet
 .SH "SYNOPSIS"
-.B demoapiscalargalaxy
-[\fIglobal options\fR] \fIcommand\fR [\fIsubcommand\fR] [\fIarguments\fR] [\fIoptions\fR]
+.B scalargalaxy planets delete
+\fIplanet\-id\fR [\fIoptions\fR]
 .SH "DESCRIPTION"
-demoapiscalargalaxy calls the Demo API (Scalar Galaxy) from the command line. Commands are grouped by resource, and every command prints its result to standard output in the configured format.
-.PP
-The Scalar Galaxy is an example OpenAPI document to test OpenAPI tools and libraries. It's a fictional universe with fictional planets and fictional data. Get all the data for all planets.
-.SH "GLOBAL OPTIONS"
+This endpoint was used to delete planets. Unfortunately, that caused a lot of trouble for planets with life. So, this endpoint is now deprecated and should not be used anymore.
+.SH "ARGUMENTS"
+.TP
+\fIplanet\-id\fR, \fB\-\-planet\-id\fR \fI<value>\fR
+The ID of the planet to get. Required. Can also be supplied as \-\-planet\-id.
+.SH "OPTIONS"
 .TP
 \fB\-\-base\-url\fR \fI<url>\fR
 Override the base URL for API requests.
@@ -61,59 +63,11 @@ OAuth 2.0 authentication. Can also be set with the O_AUTH2 environment variable.
 .TP
 \fB\-\-open\-id\-connect\fR \fI<value>\fR
 OpenID Connect Authentication. Can also be set with the OPEN_ID_CONNECT environment variable.
-.SH "COMMANDS"
-.TP
-\fBdemoapiscalargalaxy planets list\fR
-Get all planets. See demoapiscalargalaxy\-planets\-list(1).
-.TP
-\fBdemoapiscalargalaxy planets create\fR
-Create a planet. See demoapiscalargalaxy\-planets\-create(1).
-.TP
-\fBdemoapiscalargalaxy planets retrieve\fR
-Get a planet. See demoapiscalargalaxy\-planets\-retrieve(1).
-.TP
-\fBdemoapiscalargalaxy planets update\fR
-Update a planet. See demoapiscalargalaxy\-planets\-update(1).
-.TP
-\fBdemoapiscalargalaxy planets delete\fR
-Delete a planet. See demoapiscalargalaxy\-planets\-delete(1).
-.TP
-\fBdemoapiscalargalaxy planets upload\-image\fR
-Upload an image to a planet. See demoapiscalargalaxy\-planets\-upload\-image(1).
-.TP
-\fBdemoapiscalargalaxy celestial\-bodies create\fR
-Create a celestial body. See demoapiscalargalaxy\-celestial\-bodies\-create(1).
-.TP
-\fBdemoapiscalargalaxy authentication create\-user\fR
-Create a user. See demoapiscalargalaxy\-authentication\-create\-user(1).
-.TP
-\fBdemoapiscalargalaxy authentication create\-token\fR
-Get a token. See demoapiscalargalaxy\-authentication\-create\-token(1).
-.TP
-\fBdemoapiscalargalaxy authentication list\-me\fR
-Get authenticated user. See demoapiscalargalaxy\-authentication\-list\-me(1).
-.TP
-\fBdemoapiscalargalaxy completion\fR
-Print a shell completion script. See demoapiscalargalaxy\-completion(1).
-.SH "FILE ARGUMENTS"
-Any command flag or credential reads its value from a file when the value begins with @. A flag shown with a <path> value uploads a file and takes its path with or without the @. The global options above are read exactly as written.
+.SH "EXAMPLES"
 .PP
 .RS 4
 .nf
-demoapiscalargalaxy COMMAND \-\-FLAG @./body.json    # contents of the file
-demoapiscalargalaxy COMMAND \-\-FLAG @file://./n.txt # always sent as text
-demoapiscalargalaxy COMMAND \-\-FLAG @data://./l.png # always base64\-encoded
-demoapiscalargalaxy COMMAND \-\-FLAG '\e@literal'    # a value that begins with @
-.fi
-.RE
-.SH "SHELL COMPLETION"
-demoapiscalargalaxy completion <shell> prints a completion script for bash, zsh, and fish. Load it from your shell startup file:
-.PP
-.RS 4
-.nf
-eval "$(demoapiscalargalaxy completion bash)"
-eval "$(demoapiscalargalaxy completion zsh)"
-demoapiscalargalaxy completion fish | source
+scalargalaxy planets delete '1' \-\-bearer\-auth "$BEARER_AUTH"
 .fi
 .RE
 .SH "ENVIRONMENT"
@@ -169,3 +123,5 @@ The API failed to handle the request (HTTP 5xx). Reported as server\-error.
 .TP
 \fB15\fR
 The API could not be reached, or the request timed out. Reported as connection\-error.
+.SH "SEE ALSO"
+.BR scalargalaxy (1)
