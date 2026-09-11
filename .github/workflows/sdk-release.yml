@@ -12,7 +12,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   id-token: write
   packages: write
 
@@ -26,13 +26,47 @@ jobs:
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: "24"
-          registry-url: "https://registry.npmjs.org"
       - run: npm install
       - run: npm run build
-      # OIDC trusted publishing needs npm >= 11.5; pinned to the major (not `latest`) so a new
-      # npm major raising its Node engine floor cannot break publishes against the pinned Node.
-      # No token is stored: `npm publish` mints a short-lived, provenance-signed credential once
-      # this repository is registered as a trusted publisher for the package.
-      - run: npm install -g npm@11
-      - name: Publish to npm
-        run: node scripts/publish-npm.mjs
+      # The version is owned by release tooling in this repository, never by the SDK generator,
+      # so the asset and Homebrew steps read it from package.json at run time.
+      - name: Read package version
+        run: echo "PKG_VERSION=$(node -p 'require("./package.json").version')" >> "$GITHUB_ENV"
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: "1.4.0"
+      # `bun build --compile` embeds the Bun runtime and every dependency in the executable, so the
+      # published artifacts run on a machine with no Node, no Bun, and no `node_modules` — unlike the
+      # npm package, which stays a normal Node CLI. Bun cross-compiles every target from this one
+      # Linux runner by downloading the matching runtime, so the matrix needs no extra jobs.
+      #
+      # The compile reads `src/bin.ts` rather than the `tsc` output in `dist/`: Bun bundles
+      # TypeScript directly, and going through `dist/` would only add the emitted ESM specifier
+      # rewriting as a failure mode between the source and the shipped binary.
+      #
+      # Asset names carry no version: the release tag in the download path already does, and a
+      # stable file name is what makes `releases/latest/download/<name>` resolve, so install
+      # instructions can point at "latest" without being rewritten every release.
+      - name: Compile standalone binaries
+        run: |
+          ROOT="$PWD"
+          mkdir -p release-binaries
+          for target in linux-x64 linux-arm64 darwin-x64 darwin-arm64 windows-x64; do
+            rm -rf compile-out && mkdir -p compile-out
+            case "$target" in
+              windows-*)
+                bun build src/bin.ts --compile --minify --target="bun-${target}" --outfile "compile-out/scalargalaxy.exe"
+                (cd compile-out && zip -q "$ROOT/release-binaries/scalargalaxy-${target}.zip" "scalargalaxy.exe")
+                ;;
+              *)
+                bun build src/bin.ts --compile --minify --target="bun-${target}" --outfile "compile-out/scalargalaxy"
+                tar -czf "release-binaries/scalargalaxy-${target}.tar.gz" -C compile-out "scalargalaxy"
+                ;;
+            esac
+          done
+          rm -rf compile-out
+      - name: Attach binaries to the release
+        run: gh release upload "v${PKG_VERSION}" release-binaries/* --clobber
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
