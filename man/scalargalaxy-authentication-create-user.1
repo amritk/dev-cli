@@ -1,13 +1,16 @@
 .\" File generated from our OpenAPI spec by Scalar. Do not edit.
-.TH "DEMOAPISCALARGALAXY\-AUTHENTICATION\-CREATE\-TOKEN" "1" "" "demoapiscalargalaxy" "Demo API (Scalar Galaxy) Manual"
+.TH "SCALARGALAXY\-AUTHENTICATION\-CREATE\-USER" "1" "" "scalargalaxy" "Scalar Galaxy Manual"
 .SH "NAME"
-demoapiscalargalaxy\-authentication\-create\-token \- Get a token
+scalargalaxy\-authentication\-create\-user \- Create a user
 .SH "SYNOPSIS"
-.B demoapiscalargalaxy authentication create\-token
+.B scalargalaxy authentication create\-user
 \fB\-\-email\fR \fI<value>\fR \fB\-\-password\fR \fI<value>\fR [\fIoptions\fR]
 .SH "DESCRIPTION"
-Yeah, this is the boring security stuff. Just get your super secret token and move on.
+Time to create a user account, eh?
 .SH "OPTIONS"
+.TP
+\fB\-\-name\fR \fI<value>\fR
+The name body parameter.
 .TP
 \fB\-\-email\fR \fI<value>\fR
 The email body parameter. Required.
@@ -69,7 +72,11 @@ OpenID Connect Authentication. Can also be set with the OPEN_ID_CONNECT environm
 .PP
 .RS 4
 .nf
-demoapiscalargalaxy authentication create\-token \-\-bearer\-auth "$BEARER_AUTH" \-\-email 'marc@scalar.com' \-\-password 'i\-love\-scalar'
+scalargalaxy authentication create\-user \e
+  \-\-bearer\-auth "$BEARER_AUTH" \e
+  \-\-name 'Marc' \e
+  \-\-email 'marc@scalar.com' \e
+  \-\-password 'i\-love\-scalar'
 .fi
 .RE
 .SH "ENVIRONMENT"
@@ -126,4 +133,4 @@ The API failed to handle the request (HTTP 5xx). Reported as server\-error.
 \fB15\fR
 The API could not be reached, or the request timed out. Reported as connection\-error.
 .SH "SEE ALSO"
-.BR demoapiscalargalaxy (1)
+.BR scalargalaxy (1)

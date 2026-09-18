@@ -1,4 +1,4 @@
-# Demo API (Scalar Galaxy) CLI API
+# Scalar Galaxy CLI API
 
 Complete reference of every operation, grouped by resource. See [the README](./README.md) for usage and configuration.
 
@@ -27,7 +27,7 @@ Everything about planets
 It's easy to say you know them all, but do you really? Retrieve all the planets and check whether you missed one.
 
 ```sh
-demoapiscalargalaxy planets list --bearer-auth "$BEARER_AUTH" --limit '10' --offset '0'
+scalargalaxy planets list --bearer-auth "$BEARER_AUTH" --limit '10' --offset '0'
 ```
 
 ### Create a planet
@@ -35,7 +35,10 @@ demoapiscalargalaxy planets list --bearer-auth "$BEARER_AUTH" --limit '10' --off
 Time to play god and create a new planet. What do you think? Ah, don't think too much. What could go wrong anyway?
 
 ```sh
-demoapiscalargalaxy planets create --bearer-auth "$BEARER_AUTH" --name 'Mars' --type 'terrestrial'
+scalargalaxy planets create \
+  --bearer-auth "$BEARER_AUTH" \
+  --name 'Mars' \
+  --type 'terrestrial'
 ```
 
 ### Get a planet
@@ -43,7 +46,7 @@ demoapiscalargalaxy planets create --bearer-auth "$BEARER_AUTH" --name 'Mars' --
 You'll better learn a little bit more about the planets. It might come in handy once space travel is available for everyone.
 
 ```sh
-demoapiscalargalaxy planets retrieve '1' --bearer-auth "$BEARER_AUTH"
+scalargalaxy planets retrieve '1' --bearer-auth "$BEARER_AUTH"
 ```
 
 ### Update a planet
@@ -51,7 +54,10 @@ demoapiscalargalaxy planets retrieve '1' --bearer-auth "$BEARER_AUTH"
 Sometimes you make mistakes, that's fine. No worries, you can update all planets.
 
 ```sh
-demoapiscalargalaxy planets update '1' --bearer-auth "$BEARER_AUTH" --name 'Mars' --type 'terrestrial'
+scalargalaxy planets update '1' \
+  --bearer-auth "$BEARER_AUTH" \
+  --name 'Mars' \
+  --type 'terrestrial'
 ```
 
 ### Delete a planet
@@ -59,7 +65,7 @@ demoapiscalargalaxy planets update '1' --bearer-auth "$BEARER_AUTH" --name 'Mars
 This endpoint was used to delete planets. Unfortunately, that caused a lot of trouble for planets with life. So, this endpoint is now deprecated and should not be used anymore.
 
 ```sh
-demoapiscalargalaxy planets delete '1' --bearer-auth "$BEARER_AUTH"
+scalargalaxy planets delete '1' --bearer-auth "$BEARER_AUTH"
 ```
 
 ### Upload an image to a planet
@@ -67,7 +73,7 @@ demoapiscalargalaxy planets delete '1' --bearer-auth "$BEARER_AUTH"
 Got a crazy good photo of a planet? Share it with the world!
 
 ```sh
-demoapiscalargalaxy planets upload-image '1' --bearer-auth "$BEARER_AUTH"
+scalargalaxy planets upload-image '1' --bearer-auth "$BEARER_AUTH"
 ```
 
 ## `CelestialBodies`
@@ -77,7 +83,7 @@ Celestial bodies are the planets and satellites in the Scalar Galaxy.
 ### Create a celestial body
 
 ```sh
-demoapiscalargalaxy celestial-bodies create --bearer-auth "$BEARER_AUTH"
+scalargalaxy celestial-bodies create --bearer-auth "$BEARER_AUTH"
 ```
 
 ## `Authentication`
@@ -89,7 +95,11 @@ Some endpoints are public, but some require authentication. We provide all the r
 Time to create a user account, eh?
 
 ```sh
-demoapiscalargalaxy authentication create-user --bearer-auth "$BEARER_AUTH" --name 'Marc' --email 'marc@scalar.com' --password 'i-love-scalar'
+scalargalaxy authentication create-user \
+  --bearer-auth "$BEARER_AUTH" \
+  --name 'Marc' \
+  --email 'marc@scalar.com' \
+  --password 'i-love-scalar'
 ```
 
 ### Get a token
@@ -97,7 +107,10 @@ demoapiscalargalaxy authentication create-user --bearer-auth "$BEARER_AUTH" --na
 Yeah, this is the boring security stuff. Just get your super secret token and move on.
 
 ```sh
-demoapiscalargalaxy authentication create-token --bearer-auth "$BEARER_AUTH" --email 'marc@scalar.com' --password 'i-love-scalar'
+scalargalaxy authentication create-token \
+  --bearer-auth "$BEARER_AUTH" \
+  --email 'marc@scalar.com' \
+  --password 'i-love-scalar'
 ```
 
 ### Get authenticated user
@@ -105,5 +118,5 @@ demoapiscalargalaxy authentication create-token --bearer-auth "$BEARER_AUTH" --e
 Find yourself they say. That's what you can do here.
 
 ```sh
-demoapiscalargalaxy authentication list-me --bearer-auth "$BEARER_AUTH"
+scalargalaxy authentication list-me --bearer-auth "$BEARER_AUTH"
 ```

@@ -1,13 +1,19 @@
 .\" File generated from our OpenAPI spec by Scalar. Do not edit.
-.TH "DEMOAPISCALARGALAXY\-AUTHENTICATION\-LIST\-ME" "1" "" "demoapiscalargalaxy" "Demo API (Scalar Galaxy) Manual"
+.TH "SCALARGALAXY\-PLANETS\-LIST" "1" "" "scalargalaxy" "Scalar Galaxy Manual"
 .SH "NAME"
-demoapiscalargalaxy\-authentication\-list\-me \- Get authenticated user
+scalargalaxy\-planets\-list \- Get all planets
 .SH "SYNOPSIS"
-.B demoapiscalargalaxy authentication list\-me
+.B scalargalaxy planets list
 [\fIoptions\fR]
 .SH "DESCRIPTION"
-Find yourself they say. That's what you can do here.
+It's easy to say you know them all, but do you really? Retrieve all the planets and check whether you missed one.
 .SH "OPTIONS"
+.TP
+\fB\-\-limit\fR \fI<number>\fR
+The number of items to return.
+.TP
+\fB\-\-offset\fR \fI<number>\fR
+The number of items to skip before starting to collect the result set.
 .TP
 \fB\-\-base\-url\fR \fI<url>\fR
 Override the base URL for API requests.
@@ -63,7 +69,7 @@ OpenID Connect Authentication. Can also be set with the OPEN_ID_CONNECT environm
 .PP
 .RS 4
 .nf
-demoapiscalargalaxy authentication list\-me \-\-bearer\-auth "$BEARER_AUTH"
+scalargalaxy planets list \-\-bearer\-auth "$BEARER_AUTH" \-\-limit '10' \-\-offset '0'
 .fi
 .RE
 .SH "ENVIRONMENT"
@@ -120,4 +126,4 @@ The API failed to handle the request (HTTP 5xx). Reported as server\-error.
 \fB15\fR
 The API could not be reached, or the request timed out. Reported as connection\-error.
 .SH "SEE ALSO"
-.BR demoapiscalargalaxy (1)
+.BR scalargalaxy (1)

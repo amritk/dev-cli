@@ -54,6 +54,11 @@ export type CliCommandDefinition = {
   readonly flags: readonly CliFlagDefinition[];
 };
 
+export type CliCommandGroup = {
+  readonly commandPath: readonly string[];
+  readonly description?: string;
+};
+
 export type CliClientOptionDefinition = {
   readonly clientKey: string;
   readonly sdkKey: string;
@@ -77,6 +82,9 @@ export type CreateProgramOptions = {
   readonly defaultErrorFormat: OutputFormat;
   readonly clientOptions: readonly CliClientOptionDefinition[];
   readonly commands: readonly CliCommandDefinition[];
+  // Descriptions for the resource-shaped parents commands hang under. Only described groups are
+  // listed; Commander already creates an undescribed parent implicitly.
+  readonly groups?: readonly CliCommandGroup[];
   // Completion script per shell, generated alongside the command table. Absent when the SDK
   // config disables shell completions, in which case no `completion` command is registered.
   readonly completions?: Readonly<Record<string, string>>;
@@ -115,6 +123,7 @@ export const createProgram = ({
   defaultErrorFormat,
   clientOptions,
   commands,
+  groups,
   completions,
 }: CreateProgramOptions): Command => {
   const program = usageExitCode(new Command());
@@ -144,7 +153,7 @@ export const createProgram = ({
     program.option('--' + option.name + ' <value>', clientOptionDescription(option));
   }
 
-  for (const definition of commands) addGeneratedCommand(program, SDK, clientOptions, definition);
+  for (const definition of commands) addGeneratedCommand(program, SDK, clientOptions, definition, groups);
 
   if (completions) addCompletionCommand(program, binaryName, completions);
 
@@ -216,13 +225,43 @@ const clientOptionDescription = (option: CliClientOptionDefinition): string => {
   return parts.join(' ');
 };
 
+// Constructs the embedded client, restating its credential guard in command-line terms.
+//
+// The SDK's own guard is worded for a library caller — "instantiate the X client with an apiKey
+// option, like new X({ apiKey: ... })" — which names something a CLI user cannot do. That wording
+// is fixed upstream to match the reference SDKs byte for byte, so it is restated here rather than
+// changed there. The environment variable is the anchor for the match: it is the one token of the
+// message this runtime also knows, so an unrelated constructor failure is rethrown untouched
+// instead of being reported as a missing credential.
+const buildClient = (
+  SDK: CreateProgramOptions['SDK'],
+  options: Record<string, unknown>,
+  clientOptions: readonly CliClientOptionDefinition[],
+): Record<string, unknown> => {
+  try {
+    return new SDK(options) as Record<string, unknown>;
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    const missing = clientOptions.find((option) => option.env !== undefined && message.includes(option.env));
+    if (!missing) throw error;
+    throw new Error(
+      'Missing credential: pass --' +
+        missing.name +
+        ' <value>' +
+        (missing.env ? ' or set the ' + missing.env + ' environment variable' : '') +
+        '.',
+    );
+  }
+};
+
 const addGeneratedCommand = (
   program: Command,
   SDK: CreateProgramOptions['SDK'],
   clientOptions: readonly CliClientOptionDefinition[],
   definition: CliCommandDefinition,
+  groups: readonly CliCommandGroup[] | undefined,
 ): void => {
-  const parent = ensureCommandPath(program, definition.commandPath.slice(0, -1));
+  const parent = ensureCommandPath(program, definition.commandPath.slice(0, -1), groups);
   const commandName = definition.commandPath.at(-1) ?? definition.methodName;
   const command = usageExitCode(new Command(commandName))
     .description(definition.summary ?? definition.description ?? '')
@@ -280,7 +319,13 @@ const addGeneratedCommand = (
 
   // Flag spelling for path params (`--id wkr_1`); skipped when the name is already taken by a
   // client option or generated flag so Commander does not throw on a duplicate registration.
+  //
+  // `help` is skipped on top of that scan rather than through it: Commander keeps its built-in
+  // help option in `_helpOption`, not in `command.options`, so the scan cannot see it and
+  // `--help <value>` would register over it — leaving `<command> --help` to fail with "argument
+  // missing" instead of printing help. The param is still accepted positionally.
   for (const positional of definition.positional) {
+    if (positional.name === 'help') continue;
     if (command.options.some((option) => option.long === '--' + positional.name)) continue;
     command.option('--' + positional.name + ' <value>', positional.description ?? '');
   }
@@ -295,20 +340,42 @@ const addGeneratedCommand = (
   parent.addCommand(command);
 };
 
-const ensureCommandPath = (program: Command, path: readonly string[]): Command => {
+const ensureCommandPath = (
+  program: Command,
+  path: readonly string[],
+  groups: readonly CliCommandGroup[] | undefined,
+): Command => {
   let parent = program;
+  const walked: string[] = [];
   for (const part of path) {
+    walked.push(part);
     const existing = parent.commands.find((command) => command.name() === part);
     if (existing) {
       parent = existing;
       continue;
     }
     const next = usageExitCode(new Command(part)).showHelpAfterError();
+    // A group is created as the parent of its first command, so this is the only moment it can be
+    // described: Commander never revisits it, and an undescribed group is a bare name in --help.
+    const description = groupDescription(groups, walked);
+    if (description) next.description(description);
     parent.addCommand(next);
     parent = next;
   }
   return parent;
 };
+
+// Matched on the full walked path rather than the last segment, so a nested group is described by
+// the resource it was actually built from and two resources sharing a leaf name cannot collide.
+const groupDescription = (
+  groups: readonly CliCommandGroup[] | undefined,
+  path: readonly string[],
+): string | undefined =>
+  groups?.find(
+    (group) =>
+      group.commandPath.length === path.length &&
+      group.commandPath.every((part, index) => part === path[index]),
+  )?.description;
 
 const runGeneratedCommand = async (
   SDK: CreateProgramOptions['SDK'],
@@ -338,7 +405,7 @@ const runGeneratedCommand = async (
   };
 
   try {
-    const client = new SDK(sdkClientOptions(rootOptions, command, clientOptions)) as Record<string, unknown>;
+    const client = buildClient(SDK, sdkClientOptions(rootOptions, command, clientOptions), clientOptions);
     const method = sdkMethod(client, definition);
     const call = await callArguments(definition, command.opts<Record<string, unknown>>(), positionalValues);
 
@@ -461,7 +528,10 @@ const callArguments = async (
   const stdin = await readStdinValue();
   const params = mergeObjects(stdin, { ...flagParams, ...positionalParams });
   const positionalArgs = definition.positional.map((param) => params[param.paramKey]);
-  const sdkParams = definition.transport === 'websocket' ? omitParams(params, ['send']) : params;
+  // Positional values already occupy separate SDK arguments and must not leak into query/body data.
+  const omitted = definition.positional.map((param) => param.paramKey);
+  if (definition.transport === 'websocket') omitted.push('send');
+  const sdkParams = omitParams(params, omitted);
 
   if (definition.callShape === 'options') return { args: [...positionalArgs, undefined], params };
   if (definition.callShape === 'body')
