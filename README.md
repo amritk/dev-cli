@@ -28,7 +28,7 @@ The full API of this library can be found in [api.md](./api.md).
 
 ```sh
 # Direct download — standalone binary, no Node.js required
-curl -fsSL https://github.com/amritk/dev-cli/releases/latest/download/scalargalaxy-$(uname -s | tr '[:upper:]' '[:lower:]')-$(uname -m | sed 's/x86_64/x64/;s/aarch64/arm64/').tar.gz | tar xz
+curl -fsSL "https://github.com/amritk/dev-cli/releases/latest/download/scalargalaxy-$(uname -s | tr '[:upper:]' '[:lower:]')-$(uname -m | sed 's/x86_64/x64/;s/aarch64/arm64/').tar.gz" | tar xz
 sudo mv scalargalaxy /usr/local/bin/
 
 # Windows — download and extract scalargalaxy-windows-x64.zip, then add it to PATH
@@ -45,7 +45,7 @@ scalargalaxy [resource] [command] [flags]
 scalargalaxy planets list --bearer-auth "$BEARER_AUTH" --limit '10' --offset '0'
 ```
 
-The examples in the following sections assume a `client` configured as shown above.
+Every command accepts the global flags below, so the examples that follow show only what is specific to them.
 
 See the [API reference](./api.md) for every available operation.
 

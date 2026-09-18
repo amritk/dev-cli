@@ -11,7 +11,7 @@ Generated CLI client for Scalar Galaxy API, published as `scalar-galaxy-cli`. Us
 
 ```sh
 # Direct download — standalone binary, no Node.js required
-curl -fsSL https://github.com/amritk/dev-cli/releases/latest/download/scalargalaxy-$(uname -s | tr '[:upper:]' '[:lower:]')-$(uname -m | sed 's/x86_64/x64/;s/aarch64/arm64/').tar.gz | tar xz
+curl -fsSL "https://github.com/amritk/dev-cli/releases/latest/download/scalargalaxy-$(uname -s | tr '[:upper:]' '[:lower:]')-$(uname -m | sed 's/x86_64/x64/;s/aarch64/arm64/').tar.gz" | tar xz
 sudo mv scalargalaxy /usr/local/bin/
 
 # Windows — download and extract scalargalaxy-windows-x64.zip, then add it to PATH

@@ -225,6 +225,35 @@ const clientOptionDescription = (option: CliClientOptionDefinition): string => {
   return parts.join(' ');
 };
 
+// Constructs the embedded client, restating its credential guard in command-line terms.
+//
+// The SDK's own guard is worded for a library caller — "instantiate the X client with an apiKey
+// option, like new X({ apiKey: ... })" — which names something a CLI user cannot do. That wording
+// is fixed upstream to match the reference SDKs byte for byte, so it is restated here rather than
+// changed there. The environment variable is the anchor for the match: it is the one token of the
+// message this runtime also knows, so an unrelated constructor failure is rethrown untouched
+// instead of being reported as a missing credential.
+const buildClient = (
+  SDK: CreateProgramOptions['SDK'],
+  options: Record<string, unknown>,
+  clientOptions: readonly CliClientOptionDefinition[],
+): Record<string, unknown> => {
+  try {
+    return new SDK(options) as Record<string, unknown>;
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    const missing = clientOptions.find((option) => option.env !== undefined && message.includes(option.env));
+    if (!missing) throw error;
+    throw new Error(
+      'Missing credential: pass --' +
+        missing.name +
+        ' <value>' +
+        (missing.env ? ' or set the ' + missing.env + ' environment variable' : '') +
+        '.',
+    );
+  }
+};
+
 const addGeneratedCommand = (
   program: Command,
   SDK: CreateProgramOptions['SDK'],
@@ -290,7 +319,13 @@ const addGeneratedCommand = (
 
   // Flag spelling for path params (`--id wkr_1`); skipped when the name is already taken by a
   // client option or generated flag so Commander does not throw on a duplicate registration.
+  //
+  // `help` is skipped on top of that scan rather than through it: Commander keeps its built-in
+  // help option in `_helpOption`, not in `command.options`, so the scan cannot see it and
+  // `--help <value>` would register over it — leaving `<command> --help` to fail with "argument
+  // missing" instead of printing help. The param is still accepted positionally.
   for (const positional of definition.positional) {
+    if (positional.name === 'help') continue;
     if (command.options.some((option) => option.long === '--' + positional.name)) continue;
     command.option('--' + positional.name + ' <value>', positional.description ?? '');
   }
@@ -370,7 +405,7 @@ const runGeneratedCommand = async (
   };
 
   try {
-    const client = new SDK(sdkClientOptions(rootOptions, command, clientOptions)) as Record<string, unknown>;
+    const client = buildClient(SDK, sdkClientOptions(rootOptions, command, clientOptions), clientOptions);
     const method = sdkMethod(client, definition);
     const call = await callArguments(definition, command.opts<Record<string, unknown>>(), positionalValues);
 
@@ -493,7 +528,10 @@ const callArguments = async (
   const stdin = await readStdinValue();
   const params = mergeObjects(stdin, { ...flagParams, ...positionalParams });
   const positionalArgs = definition.positional.map((param) => params[param.paramKey]);
-  const sdkParams = definition.transport === 'websocket' ? omitParams(params, ['send']) : params;
+  // Positional values already occupy separate SDK arguments and must not leak into query/body data.
+  const omitted = definition.positional.map((param) => param.paramKey);
+  if (definition.transport === 'websocket') omitted.push('send');
+  const sdkParams = omitParams(params, omitted);
 
   if (definition.callShape === 'options') return { args: [...positionalArgs, undefined], params };
   if (definition.callShape === 'body')
