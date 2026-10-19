@@ -7,8 +7,10 @@ import {
   type CliClientOptionDefinition,
   type CliCommandDefinition,
   type CliCommandGroup,
+  type CliEnvironment,
 } from '../cli/runtime';
 import { completions } from '../cli/completions';
+import type { CliAuthDefinition } from '../cli/login';
 
 const clientOptions = [
   {
@@ -96,6 +98,15 @@ const commands = [
     transport: 'http',
     iterable: false,
     callShape: 'params',
+    authClientKeyRequirements: [
+      ['bearerAuth'],
+      ['basicAuthUsername', 'basicAuthPassword'],
+      ['apiKeyQuery'],
+      ['apiKeyHeader'],
+      ['apiKeyCookie'],
+      ['oAuth2'],
+      ['openIDConnect'],
+    ],
     positional: [],
     flags: [
       {
@@ -128,6 +139,15 @@ const commands = [
     transport: 'http',
     iterable: false,
     callShape: 'body',
+    authClientKeyRequirements: [
+      ['bearerAuth'],
+      ['basicAuthUsername', 'basicAuthPassword'],
+      ['apiKeyQuery'],
+      ['apiKeyHeader'],
+      ['apiKeyCookie'],
+      ['oAuth2'],
+      ['openIDConnect'],
+    ],
     positional: [],
     flags: [
       {
@@ -344,6 +364,15 @@ const commands = [
     transport: 'http',
     iterable: false,
     callShape: 'options',
+    authClientKeyRequirements: [
+      ['bearerAuth'],
+      ['basicAuthUsername', 'basicAuthPassword'],
+      ['apiKeyQuery'],
+      ['apiKeyHeader'],
+      ['apiKeyCookie'],
+      ['oAuth2'],
+      ['openIDConnect'],
+    ],
     positional: [
       {
         name: 'planet-id',
@@ -353,6 +382,7 @@ const commands = [
         required: true,
         description: 'The ID of the planet to get',
         valueKind: 'integer',
+        flagName: 'planet-id',
       },
     ],
     flags: [],
@@ -366,6 +396,15 @@ const commands = [
     transport: 'http',
     iterable: false,
     callShape: 'body',
+    authClientKeyRequirements: [
+      ['bearerAuth'],
+      ['basicAuthUsername', 'basicAuthPassword'],
+      ['apiKeyQuery'],
+      ['apiKeyHeader'],
+      ['apiKeyCookie'],
+      ['oAuth2'],
+      ['openIDConnect'],
+    ],
     positional: [
       {
         name: 'planet-id',
@@ -375,6 +414,7 @@ const commands = [
         required: true,
         description: 'The ID of the planet to get',
         valueKind: 'integer',
+        flagName: 'planet-id',
       },
     ],
     flags: [
@@ -592,6 +632,15 @@ const commands = [
     transport: 'http',
     iterable: false,
     callShape: 'options',
+    authClientKeyRequirements: [
+      ['bearerAuth'],
+      ['basicAuthUsername', 'basicAuthPassword'],
+      ['apiKeyQuery'],
+      ['apiKeyHeader'],
+      ['apiKeyCookie'],
+      ['oAuth2'],
+      ['openIDConnect'],
+    ],
     positional: [
       {
         name: 'planet-id',
@@ -601,6 +650,7 @@ const commands = [
         required: true,
         description: 'The ID of the planet to get',
         valueKind: 'integer',
+        flagName: 'planet-id',
       },
     ],
     flags: [],
@@ -614,6 +664,15 @@ const commands = [
     transport: 'http',
     iterable: false,
     callShape: 'body',
+    authClientKeyRequirements: [
+      ['bearerAuth'],
+      ['basicAuthUsername', 'basicAuthPassword'],
+      ['apiKeyQuery'],
+      ['apiKeyHeader'],
+      ['apiKeyCookie'],
+      ['oAuth2'],
+      ['openIDConnect'],
+    ],
     positional: [
       {
         name: 'planet-id',
@@ -623,6 +682,7 @@ const commands = [
         required: true,
         description: 'The ID of the planet to get',
         valueKind: 'integer',
+        flagName: 'planet-id',
       },
     ],
     flags: [
@@ -645,6 +705,15 @@ const commands = [
     transport: 'http',
     iterable: false,
     callShape: 'body',
+    authClientKeyRequirements: [
+      ['bearerAuth'],
+      ['basicAuthUsername', 'basicAuthPassword'],
+      ['apiKeyQuery'],
+      ['apiKeyHeader'],
+      ['apiKeyCookie'],
+      ['oAuth2'],
+      ['openIDConnect'],
+    ],
     positional: [],
     flags: [],
   },
@@ -657,6 +726,15 @@ const commands = [
     transport: 'http',
     iterable: false,
     callShape: 'body',
+    authClientKeyRequirements: [
+      ['bearerAuth'],
+      ['basicAuthUsername', 'basicAuthPassword'],
+      ['apiKeyQuery'],
+      ['apiKeyHeader'],
+      ['apiKeyCookie'],
+      ['oAuth2'],
+      ['openIDConnect'],
+    ],
     positional: [],
     flags: [
       {
@@ -694,6 +772,15 @@ const commands = [
     transport: 'http',
     iterable: false,
     callShape: 'body',
+    authClientKeyRequirements: [
+      ['bearerAuth'],
+      ['basicAuthUsername', 'basicAuthPassword'],
+      ['apiKeyQuery'],
+      ['apiKeyHeader'],
+      ['apiKeyCookie'],
+      ['oAuth2'],
+      ['openIDConnect'],
+    ],
     positional: [],
     flags: [
       {
@@ -723,6 +810,15 @@ const commands = [
     transport: 'http',
     iterable: false,
     callShape: 'options',
+    authClientKeyRequirements: [
+      ['bearerAuth'],
+      ['basicAuthUsername', 'basicAuthPassword'],
+      ['apiKeyQuery'],
+      ['apiKeyHeader'],
+      ['apiKeyCookie'],
+      ['oAuth2'],
+      ['openIDConnect'],
+    ],
     positional: [],
     flags: [],
   },
@@ -744,16 +840,136 @@ const groups = [
   },
 ] as const satisfies readonly CliCommandGroup[];
 
+const environments = [
+  {
+    name: 'production',
+    url: 'https://galaxy.scalar.com',
+  },
+  {
+    name: 'responds_with_your_request_data',
+    url: 'https://void.scalar.com/{path}',
+  },
+] as const satisfies readonly CliEnvironment[];
+
+const auth = {
+  loginPath: ['login'],
+  logoutPath: ['logout'],
+  loginCommand: 'scalargalaxy login',
+  storeName: 'scalargalaxy',
+  storeEnv: 'SCALAR_BW0_GP_CREDENTIALS_FILE',
+  baseUrlEnv: 'SCALAR_BW0_GP_BASE_URL',
+  backend: 'auto',
+  defaultBaseUrl: 'https://galaxy.scalar.com',
+  environments: [
+    {
+      name: 'production',
+      url: 'https://galaxy.scalar.com',
+    },
+    {
+      name: 'responds_with_your_request_data',
+      url: 'https://void.scalar.com/{path}',
+    },
+  ],
+  requirements: [
+    ['bearerAuth'],
+    ['basicAuthUsername', 'basicAuthPassword'],
+    ['apiKeyQuery'],
+    ['apiKeyHeader'],
+    ['apiKeyCookie'],
+    ['oAuth2'],
+    ['openIDConnect'],
+  ],
+  envByKey: {
+    bearerAuth: 'BEARER_AUTH',
+    basicAuthUsername: 'BASIC_AUTH_USERNAME',
+    basicAuthPassword: 'BASIC_AUTH_PASSWORD',
+    apiKeyHeader: 'API_KEY_HEADER',
+    apiKeyQuery: 'API_KEY_QUERY',
+    apiKeyCookie: 'API_KEY_COOKIE',
+    oAuth2: 'O_AUTH2',
+    openIDConnect: 'OPEN_ID_CONNECT',
+  },
+  methods: [
+    {
+      name: 'bearer-auth',
+      label: 'Enter your access token',
+      kind: 'token',
+      clientKey: 'bearerAuth',
+      prompt: 'Access token: ',
+    },
+    {
+      name: 'basic',
+      label: 'Username and password for basic auth',
+      kind: 'basic',
+      usernameKey: 'basicAuthUsername',
+      passwordKey: 'basicAuthPassword',
+    },
+    {
+      name: 'api-key-header',
+      label: 'Enter your API key',
+      kind: 'token',
+      clientKey: 'apiKeyHeader',
+      prompt: 'API key: ',
+    },
+    {
+      name: 'api-key-query',
+      label: 'Enter your API key',
+      kind: 'token',
+      clientKey: 'apiKeyQuery',
+      prompt: 'API key: ',
+    },
+    {
+      name: 'api-key-cookie',
+      label: 'Enter your API key',
+      kind: 'token',
+      clientKey: 'apiKeyCookie',
+      prompt: 'API key: ',
+    },
+    {
+      name: 'oauth-client-credentials',
+      label: 'Sign in with a client id and secret (OAuth client credentials)',
+      kind: 'oauth',
+      grant: 'clientCredentials',
+      clientKey: 'oAuth2',
+      tokenUrl: 'https://galaxy.scalar.com/oauth/token',
+      refreshUrl: 'https://galaxy.scalar.com/oauth/token',
+      scopes: ['read:account', 'write:planets', 'read:planets'],
+    },
+    {
+      name: 'oauth-password',
+      label: 'Sign in with a username and password (OAuth password grant)',
+      kind: 'oauth',
+      grant: 'password',
+      clientKey: 'oAuth2',
+      tokenUrl: 'https://galaxy.scalar.com/oauth/token',
+      refreshUrl: 'https://galaxy.scalar.com/oauth/token',
+      scopes: ['read:account', 'write:planets', 'read:planets'],
+    },
+    {
+      name: 'open-id-connect',
+      label: 'Paste an access token you already have',
+      kind: 'token',
+      clientKey: 'openIDConnect',
+      prompt: 'Access token: ',
+    },
+  ],
+} as const satisfies CliAuthDefinition;
+
 export const getProgram = (): Command =>
   createProgram({
     SDK,
     binaryName: 'scalargalaxy',
-    version: '0.2.0', // x-release-please-version
+    version: '0.2.1', // x-release-please-version
     description: 'CLI for Scalar Galaxy',
     defaultFormat: 'auto',
     defaultErrorFormat: 'auto',
     clientOptions,
     commands,
     groups,
+    environments,
+    defaultEnvironment: 'production',
+    environmentEnv: 'SCALAR_BW0_GP_ENVIRONMENT',
+    baseUrlEnv: 'SCALAR_BW0_GP_BASE_URL',
     completions,
+    auth,
   });
