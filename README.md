@@ -11,6 +11,8 @@ The full API of this library can be found in [api.md](./api.md).
 - [Installation](#installation)
 - [Usage](#usage)
 - [API Reference](./api.md)
+- [Signing In](#signing-in)
+- [Environments](#environments)
 - [File Arguments](#file-arguments)
 - [Shell Completion](#shell-completion)
 - [Manual Pages](#manual-pages)
@@ -28,7 +30,7 @@ The full API of this library can be found in [api.md](./api.md).
 
 ```sh
 # Direct download — standalone binary, no Node.js required
-curl -fsSL "https://github.com/amritk/dev-cli/releases/latest/download/scalargalaxy-$(uname -s | tr '[:upper:]' '[:lower:]')-$(uname -m | sed 's/x86_64/x64/;s/aarch64/arm64/').tar.gz" | tar xz
+curl -fsSL "https://github.com/amritk/dev-cli/releases/latest/download/scalargalaxy-$(uname -s | tr '[:upper:]' '[:lower:]')-$(uname -m | sed 's/x86_64/x64/;s/aarch64/arm64/').tar.gz" | tar xz scalargalaxy
 sudo mv scalargalaxy /usr/local/bin/
 
 # Windows — download and extract scalargalaxy-windows-x64.zip, then add it to PATH
@@ -48,6 +50,36 @@ scalargalaxy planets list --bearer-auth "$BEARER_AUTH" --limit '10' --offset '0'
 Every command accepts the global flags below, so the examples that follow show only what is specific to them.
 
 See the [API reference](./api.md) for every available operation.
+
+<br />
+
+## Signing In
+
+`scalargalaxy login` signs you in and saves the credential for later commands, so it does not have to be passed every time. It goes into your operating system's credential store — the Keychain on macOS, the system keyring on Linux, Credential Manager on Windows — and falls back to a file in your state directory, readable only by you, when no such store is available. Either way it is filed under the base URL it was captured for, so a credential saved for one host is never sent to another. `scalargalaxy logout` forgets it. A credential passed with a flag, or set in the environment, still takes precedence over a saved one. Both act on the environment selected with `--environment <name>` or `SCALAR_BW0_GP_ENVIRONMENT`, so sign in to each environment you call. Sign-in methods: bearer-auth, basic, api-key-header, api-key-query, api-key-cookie, oauth-client-credentials, oauth-password, open-id-connect. Pass `--flow <name>` to pick one without being asked.
+
+```sh
+scalargalaxy login
+scalargalaxy login --flow bearer-auth
+scalargalaxy logout
+scalargalaxy logout --all
+```
+
+<br />
+
+## Environments
+
+This API declares more than one environment. Pass `--environment <name>` to any command to choose one, or leave it off for `production`. `--base-url` sets a URL directly and cannot be combined with it, since each names where the request goes. `scalargalaxy environments` prints the list for reading and takes `--format json` for parsing. Set `SCALAR_BW0_GP_ENVIRONMENT` to choose one for every command in a shell; `--environment` and `--base-url` both take precedence over it, and it cannot be set together with the base URL environment variable.
+
+- `production` — `https://galaxy.scalar.com` (default)
+- `responds_with_your_request_data` — `https://void.scalar.com/{path}`
+
+```sh
+# read them; --format json when a script is parsing
+scalargalaxy environments
+
+# call an endpoint against one
+scalargalaxy --environment production COMMAND
+```
 
 <br />
 
@@ -98,14 +130,14 @@ Pass credentials to the generated client constructor. Environment variables are 
 
 | Option | Type | Default | Description |
 | --- | --- | --- | --- |
-| `--bearer-auth` | `string \| provider` | - | JWT Bearer token authentication Defaults to BEARER_AUTH. |
-| `--basic-auth-username` | `string \| provider` | - | Basic HTTP authentication Defaults to BASIC_AUTH_USERNAME. |
-| `--basic-auth-password` | `string \| provider` | - | Basic HTTP authentication Defaults to BASIC_AUTH_PASSWORD. |
-| `--api-key-header` | `string \| provider` | - | API key request header Defaults to API_KEY_HEADER. |
-| `--api-key-query` | `string \| provider` | - | API key query parameter Defaults to API_KEY_QUERY. |
-| `--api-key-cookie` | `string \| provider` | - | API key browser cookie Defaults to API_KEY_COOKIE. |
-| `--o-auth2` | `string \| provider` | - | OAuth 2.0 authentication Defaults to O_AUTH2. |
-| `--open-id-connect` | `string \| provider` | - | OpenID Connect Authentication Defaults to OPEN_ID_CONNECT. |
+| `--bearer-auth` | `<value>` | - | JWT Bearer token authentication Defaults to BEARER_AUTH. |
+| `--basic-auth-username` | `<value>` | - | Basic HTTP authentication Defaults to BASIC_AUTH_USERNAME. |
+| `--basic-auth-password` | `<value>` | - | Basic HTTP authentication Defaults to BASIC_AUTH_PASSWORD. |
+| `--api-key-header` | `<value>` | - | API key request header Defaults to API_KEY_HEADER. |
+| `--api-key-query` | `<value>` | - | API key query parameter Defaults to API_KEY_QUERY. |
+| `--api-key-cookie` | `<value>` | - | API key browser cookie Defaults to API_KEY_COOKIE. |
+| `--o-auth2` | `<value>` | - | OAuth 2.0 authentication Defaults to O_AUTH2. |
+| `--open-id-connect` | `<value>` | - | OpenID Connect Authentication Defaults to OPEN_ID_CONNECT. |
 
 Declared schemes:
 
@@ -137,6 +169,7 @@ Configure the generated client by setting any of these options when you create i
 | `--timeout` | `<ms>` | - | Request timeout in milliseconds. |
 | `--max-retries` | `<count>` | - | Number of retries for retryable failures. |
 | `--debug` | `flag` | - | Enable SDK debug logging. |
+| `--environment` | `<name>` | `production` | Named environment to target: production, responds_with_your_request_data (can also be set with SCALAR_BW0_GP_ENVIRONMENT env var). Cannot be combined with `--base-url`. |
 
 <br />
 

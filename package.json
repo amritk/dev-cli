@@ -31,6 +31,8 @@
   ],
   "man": [
     "./man/scalargalaxy.1",
+    "./man/scalargalaxy-login.1",
+    "./man/scalargalaxy-logout.1",
     "./man/scalargalaxy-planets-list.1",
     "./man/scalargalaxy-planets-create.1",
     "./man/scalargalaxy-planets-retrieve.1",
@@ -41,6 +43,7 @@
     "./man/scalargalaxy-authentication-create-user.1",
     "./man/scalargalaxy-authentication-create-token.1",
     "./man/scalargalaxy-authentication-list-me.1",
+    "./man/scalargalaxy-environments.1",
     "./man/scalargalaxy-completion.1"
   ],
   "scripts": {
