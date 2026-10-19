@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.1](https://github.com/amritk/dev-cli/compare/v0.2.0...v0.2.1) (2026-10-19)
+
+
+### Chores
+
+* **api:** regenerate SDK ([0a5efeb](https://github.com/amritk/dev-cli/commit/0a5efebcef5c01ea30ed89d99ea67246ba49d40b))
+
 ## [0.2.0](https://github.com/amritk/dev-cli/compare/v0.1.0...v0.2.0) (2026-09-18)
 
 

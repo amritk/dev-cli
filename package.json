@@ -1,6 +1,6 @@
 {
   "name": "scalar-galaxy-cli",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "The Scalar Galaxy is an example OpenAPI document to test OpenAPI tools and libraries. It's a fictional universe with fictional planets and fictional data. Get all the data for all planets.",
   "author": "Scalar Galaxy",
   "repository": {
