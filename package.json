@@ -1,6 +1,6 @@
 {
   "name": "dedalus-cli",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Controlplane API for Dedalus Cloud Services (DCS).",
   "author": "Dedalus <oss@dedaluslabs.ai>",
   "repository": {

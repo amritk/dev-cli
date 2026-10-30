@@ -1236,7 +1236,7 @@ export const getProgram = (): Command =>
   createProgram({
     SDK,
     binaryName: 'devcli',
-    version: '0.3.0', // x-release-please-version
+    version: '0.4.0', // x-release-please-version
     description: 'CLI for Dedalus',
     defaultFormat: 'json',
     defaultErrorFormat: 'json',
@@ -1249,4 +1249,4 @@ export const getProgram = (): Command =>
   });
 
 /** Runs the daily update check. Called by `run()` only, so building the program makes no request. */
-export const checkForUpdates = (argv: readonly string[]): void => notifyIfOutdated('devcli', '0.3.0', argv); // x-release-please-version
+export const checkForUpdates = (argv: readonly string[]): void => notifyIfOutdated('devcli', '0.4.0', argv); // x-release-please-version
