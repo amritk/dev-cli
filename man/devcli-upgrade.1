@@ -1,0 +1,32 @@
+.\" File generated from our OpenAPI spec by Scalar. Do not edit.
+.TH "DEVCLI\-UPGRADE" "1" "" "devcli" "Dedalus Manual"
+.SH "NAME"
+devcli\-upgrade \- upgrade devcli to the latest release
+.SH "SYNOPSIS"
+.B devcli upgrade
+[\fB\-\-check\fR]
+.SH "DESCRIPTION"
+Replaces this devcli executable with the latest published release, after verifying the download against the checksums published alongside it.
+.PP
+A devcli installed by a package manager is never replaced: that manager owns the installed files, and overwriting them leaves its database describing a file that is no longer there, so the command prints how to upgrade it instead.
+.PP
+devcli also checks for a newer release at most once a day and mentions one on standard error. That check is skipped when either standard output or standard error is not a terminal, when CI is set, when running under sudo, and when NO_UPDATE_NOTIFIER or DEVCLI_NO_UPDATE_NOTIFIER is set in the environment.
+.SH "OPTIONS"
+.TP
+\fB\-\-check\fR
+Report the installed and latest versions and exit, without installing anything.
+.SH "EXIT STATUS"
+.TP
+\fB0\fR
+The command completed successfully.
+.TP
+\fB1\fR
+The command failed. The reason is reported on standard error.
+.TP
+\fB2\fR
+The command was invoked incorrectly (missing or invalid arguments).
+.PP
+When devcli cannot perform the upgrade itself (a project dependency, a cache such as npx, a package manager it cannot find) it prints what to run instead and exits 0, having changed nothing. Run devcli upgrade \-\-check first to learn whether a newer release exists.
+.SH "SEE ALSO"
+.BR devcli (1),
+.BR devcli\-uninstall (1)

@@ -1,0 +1,104 @@
+name: CLI SDK Release
+
+on:
+  # Manual re-publish only: the automated publish for each release runs as the `publish` job
+  # inside release-please.yml, in the same run that cuts the tag (dispatching a workflow here
+  # instead would resolve it on the repository's default branch only, which breaks releasing
+  # from any other release line). Dispatch this workflow at an existing release tag to re-run
+  # a failed or skipped publish. A dispatched run is top-level, so OIDC trusted-publisher
+  # claims name this file; register it as an additional trusted publisher only when manual
+  # re-publishes are used. Never add a workflow_call trigger here — registries reject
+  # publishes from called (reusable) workflows.
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  id-token: write
+  packages: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    env:
+      VERSIONING_POLICY: manual
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "24"
+      - run: npm install
+      - run: npm run build
+      # The version is owned by release tooling in this repository, never by the SDK generator,
+      # so the asset and Homebrew steps read it from package.json at run time.
+      - name: Read package version
+        run: echo "PKG_VERSION=$(node -p 'require("./package.json").version')" >> "$GITHUB_ENV"
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: "1.4.0"
+      # `bun build --compile` embeds the Bun runtime and every dependency in the executable, so the
+      # published artifacts run on a machine with no Node, no Bun, and no `node_modules` — unlike the
+      # npm package, which stays a normal Node CLI. Bun cross-compiles every target from this one
+      # Linux runner by downloading the matching runtime, so the matrix needs no extra jobs.
+      #
+      # The compile reads `src/bin.ts` rather than the `tsc` output in `dist/`: Bun bundles
+      # TypeScript directly, and going through `dist/` would only add the emitted ESM specifier
+      # rewriting as a failure mode between the source and the shipped binary.
+      #
+      # Each target compiles into its own `compile-out/<target>/` directory rather than straight
+      # into an archive, so anything that has to touch an executable can run as a step between this
+      # one and packaging — code signing, when it is configured — and the archive is always built
+      # from whatever those steps left behind.
+      - name: Compile standalone binaries
+        run: |
+          rm -rf compile-out
+          for target in linux-x64 linux-arm64 darwin-x64 darwin-arm64 windows-x64; do
+            mkdir -p "compile-out/${target}"
+            case "$target" in
+              windows-*)
+                bun build src/bin.ts --compile --minify --target="bun-${target}" --outfile "compile-out/${target}/devcli.exe"
+                ;;
+              *)
+                bun build src/bin.ts --compile --minify --target="bun-${target}" --outfile "compile-out/${target}/devcli"
+                ;;
+            esac
+          done
+      # Asset names carry no version: the release tag in the download path already does, and a
+      # stable file name is what makes `releases/latest/download/<name>` resolve, so install
+      # instructions can point at "latest" without being rewritten every release.
+      #
+      # Each tarball carries the generated man pages beside the executable, so Homebrew — and anyone
+      # unpacking the download — installs `man devcli` too rather than only the npm package doing
+      # so. Windows has no `man`, so its zip stays the executable alone.
+      #
+      # They are copied in here rather than at compile time so that what any signing step above saw
+      # — and, when notarization is on, what was uploaded to Apple, which zips these directories
+      # whole — is the executables alone.
+      - name: Package release archives
+        run: |
+          ROOT="$PWD"
+          mkdir -p release-binaries
+          for target in linux-x64 linux-arm64 darwin-x64 darwin-arm64 windows-x64; do
+            case "$target" in
+              windows-*)
+                (cd "compile-out/${target}" && zip -q "$ROOT/release-binaries/devcli-${target}.zip" "devcli.exe")
+                ;;
+              *)
+                cp -R "man" "compile-out/${target}/man"
+                tar -czf "release-binaries/devcli-${target}.tar.gz" -C "compile-out/${target}" "devcli" "man"
+                ;;
+            esac
+          done
+          rm -rf compile-out
+          cp install.sh release-binaries/install.sh
+          # One checksum file covering every archive, so anything that downloads one can verify what it
+          # fetched before running it — `upgrade` refuses to replace the executable without it. Run from
+          # inside the directory so each line names the bare asset file name, which is the name the
+          # download URL ends in, rather than `release-binaries/…`; the `sed` then strips the `./` that
+          # globbing leaves on each name. `checksums.txt` does not end up checksumming itself: the shell
+          # expands the `./*` glob before it performs the redirection that creates the file.
+          (cd release-binaries && sha256sum ./* > checksums.txt && sed -i 's| \./| |' checksums.txt)
+      - name: Attach binaries to the release
+        run: gh release upload "v${PKG_VERSION}" release-binaries/* --clobber
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

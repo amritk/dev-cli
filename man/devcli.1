@@ -1,0 +1,222 @@
+.\" File generated from our OpenAPI spec by Scalar. Do not edit.
+.TH "DEVCLI" "1" "" "devcli" "Dedalus Manual"
+.SH "NAME"
+devcli \- command line interface for the Dedalus REST API
+.SH "SYNOPSIS"
+.B devcli
+[\fIglobal options\fR] \fIcommand\fR [\fIsubcommand\fR] [\fIarguments\fR] [\fIoptions\fR]
+.SH "DESCRIPTION"
+devcli calls the Dedalus REST API from the command line. Commands are grouped by resource, and every command prints its result to standard output in the configured format.
+.PP
+Controlplane API for Dedalus Cloud Services (DCS).
+.SH "GLOBAL OPTIONS"
+.TP
+\fB\-\-base\-url\fR \fI<url>\fR
+Override the base URL for API requests.
+.TP
+\fB\-\-timeout\fR \fI<ms>\fR
+Request timeout in milliseconds.
+.TP
+\fB\-\-max\-retries\fR \fI<count>\fR
+Number of retries for retryable failures.
+.TP
+\fB\-\-format\fR \fI<format>\fR
+Output format: auto, json, jsonl, pretty, raw, toon, yaml.
+.TP
+\fB\-\-format\-error\fR \fI<format>\fR
+Error output format: auto, json, jsonl, pretty, raw, toon, yaml.
+.TP
+\fB\-\-transform\fR \fI<path>\fR
+Dot\-path transform for data output.
+.TP
+\fB\-\-transform\-error\fR \fI<path>\fR
+Dot\-path transform for error output.
+.TP
+\fB\-r\fR, \fB\-\-raw\-output\fR
+Print transformed string values without JSON quotes.
+.TP
+\fB\-\-debug\fR
+Enable SDK debug logging on standard error.
+.TP
+\fB\-\-api\-key\fR \fI<value>\fR
+Dedalus API key in Authorization: Bearer <key>. Can also be set with the DEDALUS_API_KEY environment variable.
+.TP
+\fB\-\-x\-api\-key\fR \fI<value>\fR
+Dedalus API key. Alternative to Bearer token. Can also be set with the DEDALUS_X_API_KEY environment variable.
+.TP
+\fB\-\-dedalus\-org\-id\fR \fI<value>\fR
+Organization ID header for all DCS requests. Can also be set with the DEDALUS_ORG_ID environment variable.
+.SH "COMMANDS"
+.TP
+\fBdevcli usage retrieve\fR
+Get usage summary. See devcli\-usage\-retrieve(1).
+.TP
+\fBdevcli usage machine\-compute\fR
+List machine compute usage breakdown. See devcli\-usage\-machine\-compute(1).
+.TP
+\fBdevcli usage machine\-storage\fR
+List machine storage usage breakdown. See devcli\-usage\-machine\-storage(1).
+.TP
+\fBdevcli machines list\fR
+List machines. See devcli\-machines\-list(1).
+.TP
+\fBdevcli machines create\fR
+Create machine. See devcli\-machines\-create(1).
+.TP
+\fBdevcli machines retrieve\fR
+Get machine. See devcli\-machines\-retrieve(1).
+.TP
+\fBdevcli machines update\fR
+Update machine. See devcli\-machines\-update(1).
+.TP
+\fBdevcli machines delete\fR
+Destroy machine. See devcli\-machines\-delete(1).
+.TP
+\fBdevcli machines watch\fR
+Watch machine lifecycle status. See devcli\-machines\-watch(1).
+.TP
+\fBdevcli machines sleep\fR
+Sleep a running machine. See devcli\-machines\-sleep(1).
+.TP
+\fBdevcli machines wake\fR
+Wake a sleeping machine. See devcli\-machines\-wake(1).
+.TP
+\fBdevcli machines:artifacts list\fR
+List artifacts. See devcli\-machines\-artifacts\-list(1).
+.TP
+\fBdevcli machines:artifacts retrieve\fR
+Get artifact. See devcli\-machines\-artifacts\-retrieve(1).
+.TP
+\fBdevcli machines:artifacts delete\fR
+Delete artifact. See devcli\-machines\-artifacts\-delete(1).
+.TP
+\fBdevcli machines:previews list\fR
+List previews. See devcli\-machines\-previews\-list(1).
+.TP
+\fBdevcli machines:previews create\fR
+Create preview. See devcli\-machines\-previews\-create(1).
+.TP
+\fBdevcli machines:previews retrieve\fR
+Get preview. See devcli\-machines\-previews\-retrieve(1).
+.TP
+\fBdevcli machines:previews delete\fR
+Delete preview. See devcli\-machines\-previews\-delete(1).
+.TP
+\fBdevcli machines:ssh list\fR
+List SSH sessions. See devcli\-machines\-ssh\-list(1).
+.TP
+\fBdevcli machines:ssh create\fR
+Create SSH session. See devcli\-machines\-ssh\-create(1).
+.TP
+\fBdevcli machines:ssh retrieve\fR
+Get SSH session. See devcli\-machines\-ssh\-retrieve(1).
+.TP
+\fBdevcli machines:ssh delete\fR
+Delete SSH session. See devcli\-machines\-ssh\-delete(1).
+.TP
+\fBdevcli machines:executions list\fR
+List executions. See devcli\-machines\-executions\-list(1).
+.TP
+\fBdevcli machines:executions create\fR
+Create execution. See devcli\-machines\-executions\-create(1).
+.TP
+\fBdevcli machines:executions retrieve\fR
+Get execution. See devcli\-machines\-executions\-retrieve(1).
+.TP
+\fBdevcli machines:executions delete\fR
+Delete execution. See devcli\-machines\-executions\-delete(1).
+.TP
+\fBdevcli machines:executions output\fR
+Get execution output. See devcli\-machines\-executions\-output(1).
+.TP
+\fBdevcli machines:executions events\fR
+List execution events. See devcli\-machines\-executions\-events(1).
+.TP
+\fBdevcli machines:terminals list\fR
+List terminals. See devcli\-machines\-terminals\-list(1).
+.TP
+\fBdevcli machines:terminals create\fR
+Create terminal. See devcli\-machines\-terminals\-create(1).
+.TP
+\fBdevcli machines:terminals retrieve\fR
+Get terminal. See devcli\-machines\-terminals\-retrieve(1).
+.TP
+\fBdevcli machines:terminals delete\fR
+Delete terminal. See devcli\-machines\-terminals\-delete(1).
+.TP
+\fBdevcli machines:terminals connect\fR
+Connect to terminal WebSocket stream. See devcli\-machines\-terminals\-connect(1).
+.TP
+\fBdevcli completion\fR
+Print a shell completion script. See devcli\-completion(1).
+.TP
+\fBdevcli login\fR
+Sign in and save credentials for later commands. See devcli\-login(1).
+.TP
+\fBdevcli logout\fR
+Forget saved credentials. See devcli\-logout(1).
+.TP
+\fBdevcli upgrade\fR
+Upgrade to the latest release, through the package manager that owns this installation when one does. See devcli\-upgrade(1).
+.TP
+\fBdevcli uninstall\fR
+Print how to remove this installation. See devcli\-uninstall(1).
+.SH "FILE ARGUMENTS"
+Any command flag or credential reads its value from a file when the value begins with @. A flag shown with a <path> value uploads a file and takes its path with or without the @. The global options above are read exactly as written.
+.PP
+.RS 4
+.nf
+devcli COMMAND \-\-FLAG @./body.json    # contents of the file
+devcli COMMAND \-\-FLAG @file://./n.txt # always sent as text
+devcli COMMAND \-\-FLAG @data://./l.png # always base64\-encoded
+devcli COMMAND \-\-FLAG '\e@literal'    # a value that begins with @
+.fi
+.RE
+.SH "SHELL COMPLETION"
+devcli completion <shell> prints a completion script for bash, zsh, and fish. Load it from your shell startup file:
+.PP
+.RS 4
+.nf
+eval "$(devcli completion bash)"
+eval "$(devcli completion zsh)"
+devcli completion fish | source
+.fi
+.RE
+.SH "ENVIRONMENT"
+.TP
+\fBDEDALUS_API_KEY\fR
+Fallback for \-\-api\-key when the flag is not passed.
+.TP
+\fBDEDALUS_X_API_KEY\fR
+Fallback for \-\-x\-api\-key when the flag is not passed.
+.TP
+\fBDEDALUS_ORG_ID\fR
+Fallback for \-\-dedalus\-org\-id when the flag is not passed.
+.SH "EXIT STATUS"
+.TP
+\fB0\fR
+The command completed successfully.
+.TP
+\fB1\fR
+The request failed for an unclassified reason. Reported as error.
+.TP
+\fB2\fR
+The command was invoked incorrectly (missing or invalid arguments).
+.TP
+\fB10\fR
+Authentication or authorization failed (HTTP 401 or 403). Reported as auth\-failed.
+.TP
+\fB11\fR
+The requested resource does not exist (HTTP 404). Reported as not\-found.
+.TP
+\fB12\fR
+The request was rate limited (HTTP 429). Reported as rate\-limited.
+.TP
+\fB13\fR
+The request was rejected (any other HTTP 4xx). Reported as client\-error.
+.TP
+\fB14\fR
+The API failed to handle the request (HTTP 5xx). Reported as server\-error.
+.TP
+\fB15\fR
+The API could not be reached, or the request timed out. Reported as connection\-error.

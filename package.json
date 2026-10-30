@@ -1,0 +1,101 @@
+{
+  "name": "dedalus-cli",
+  "version": "0.3.0",
+  "description": "Controlplane API for Dedalus Cloud Services (DCS).",
+  "author": "Dedalus <oss@dedaluslabs.ai>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/amritk/dev-cli.git"
+  },
+  "bugs": {
+    "url": "https://github.com/amritk/dev-cli/issues"
+  },
+  "homepage": "https://docs.dedaluslabs.ai",
+  "type": "module",
+  "bin": {
+    "devcli": "./dist/esm/bin.js"
+  },
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/esm/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/esm/index.d.ts",
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js",
+      "default": "./dist/esm/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "api.md",
+    "man",
+    "SKILL.md"
+  ],
+  "man": [
+    "./man/devcli.1",
+    "./man/devcli-login.1",
+    "./man/devcli-logout.1",
+    "./man/devcli-usage-retrieve.1",
+    "./man/devcli-usage-machine-compute.1",
+    "./man/devcli-usage-machine-storage.1",
+    "./man/devcli-machines-list.1",
+    "./man/devcli-machines-create.1",
+    "./man/devcli-machines-retrieve.1",
+    "./man/devcli-machines-update.1",
+    "./man/devcli-machines-delete.1",
+    "./man/devcli-machines-watch.1",
+    "./man/devcli-machines-sleep.1",
+    "./man/devcli-machines-wake.1",
+    "./man/devcli-machines-artifacts-list.1",
+    "./man/devcli-machines-artifacts-retrieve.1",
+    "./man/devcli-machines-artifacts-delete.1",
+    "./man/devcli-machines-previews-list.1",
+    "./man/devcli-machines-previews-create.1",
+    "./man/devcli-machines-previews-retrieve.1",
+    "./man/devcli-machines-previews-delete.1",
+    "./man/devcli-machines-ssh-list.1",
+    "./man/devcli-machines-ssh-create.1",
+    "./man/devcli-machines-ssh-retrieve.1",
+    "./man/devcli-machines-ssh-delete.1",
+    "./man/devcli-machines-executions-list.1",
+    "./man/devcli-machines-executions-create.1",
+    "./man/devcli-machines-executions-retrieve.1",
+    "./man/devcli-machines-executions-delete.1",
+    "./man/devcli-machines-executions-output.1",
+    "./man/devcli-machines-executions-events.1",
+    "./man/devcli-machines-terminals-list.1",
+    "./man/devcli-machines-terminals-create.1",
+    "./man/devcli-machines-terminals-retrieve.1",
+    "./man/devcli-machines-terminals-delete.1",
+    "./man/devcli-machines-terminals-connect.1",
+    "./man/devcli-completion.1",
+    "./man/devcli-upgrade.1",
+    "./man/devcli-uninstall.1"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json && tsc -p tsconfig.cjs.json && node scripts/finalize-build.mjs",
+    "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.cjs.json --noEmit"
+  },
+  "dependencies": {
+    "ansis": "^4.3.0",
+    "commander": "^14.0.3",
+    "yaml": "^2.9.0",
+    "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.17.0",
+    "@types/ws": "^8.5.13",
+    "typescript": "^6.0.0"
+  },
+  "peerDependencies": {
+    "ws": "^8.18.0"
+  },
+  "peerDependenciesMeta": {
+    "ws": {
+      "optional": true
+    }
+  },
+  "license": "MIT"
+}
